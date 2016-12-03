@@ -9,12 +9,16 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     TextView tv_today,tv_year,tv_month,tv_day,tv_hour,tv_min;
     RadioButton rd_date,rd_time;
     CalendarView cal;
     TimePicker time;
     Button bt_reserve;
+    String date="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,10 +39,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rd_date.setOnClickListener(this);
         rd_time.setOnClickListener(this);
         bt_reserve.setOnClickListener(this);
-
+        /*
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date d = new Date();
+        String today = sdf.format(d);
+        */
+        tv_today.setText("TODAY : "+new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        cal.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
+                date = year + "-" + (month+1) + "-" + day;
+            }
+        });
         time.setVisibility(View.INVISIBLE);
         cal.setVisibility(View.INVISIBLE);
-
     }
 
     @Override
@@ -52,7 +66,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cal.setVisibility(View.INVISIBLE);
                 time.setVisibility(View.VISIBLE);
                 break;
-            case R.id.bt_reserve:break;
+            case R.id.bt_reserve:
+                // date
+                String arr[] = date.split("-");
+                tv_year.setText(String.format(arr[0], "0000"));
+                tv_month.setText(String.format(arr[1],"00"));
+                tv_day.setText(String.format(arr[2],"00"));
+                tv_hour.setText(Integer.toString(time.getHour()));
+                tv_min.setText(Integer.toString(time.getMinute()));
+                break;
         }
     }
 }
